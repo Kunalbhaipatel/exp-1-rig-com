@@ -65,10 +65,10 @@ default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_dat
 
 # if uploaded_file is not None:
 #     data = pd.read_csv(uploaded_file)
-st.success("✅ Custom CSV uploaded successfully.")
+    st.success("✅ Custom CSV uploaded successfully.")
 # else:
 data = pd.read_csv(default_path)
-        st.info("ℹ️ Using default sample dataset.")
+    st.info("ℹ️ Using default sample dataset.")
 
 # Drop Efficiency Score column if it exists but has no values
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
