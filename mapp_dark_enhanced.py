@@ -4,15 +4,54 @@ import streamlit as st
 import plotly.express as px
 import pydeck as pdk
 import os
-# ---------- Load Data ----------
-import os
-default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
-data = pd.read_csv(default_path)
 # Example CSV load
 data = pd.read_csv("sample_rig_dashboard_data.csv")
 
 
 st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_icon="📊")
+# ---------- THEME-AWARE STYLING ----------
+import streamlit as st
+
+st.markdown("""
+<style>
+:root {
+  --header-color-light: #004578;
+  --header-color-dark: #ffffff;
+}
+
+h2 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+[data-testid="stMetric"] {
+  border-radius: 12px;
+  border: 1px solid #aaa;
+  padding: 1rem;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  background-color: var(--metric-bg, white);
+  color: var(--metric-color, black);
+}
+
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #121212;
+  }
+  h2 {
+    color: var(--header-color-dark);
+  }
+  [data-testid="stMetric"] {
+    background-color: #1e1e1e;
+    color: white;
+  }
+}
+@media (prefers-color-scheme: light) {
+  h2 {
+    color: var(--header-color-light);
+  }
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
