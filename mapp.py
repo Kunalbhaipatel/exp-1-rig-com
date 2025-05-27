@@ -202,7 +202,6 @@ with tabs[1]:
         name="Dilution Ratio",
         line=dict(color="gray")
     )
-                         line=dict(color="gray"))
             st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
             st.error(f"Chart rendering error: {e}")
