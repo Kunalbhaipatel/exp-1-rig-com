@@ -353,7 +353,19 @@ with tabs[3]:
     except Exception as e:
         st.error(f"Correlation heatmap error: {e}")
 
+with st.expander("ℹ️ What does this section show?", expanded=False):
+        st.markdown("""
+### 🤖 Advanced Analytics Summary
 
+This section helps the **drilling engineer** understand how mud composition, temperature, and drilling rate interact:
+
+- **ROP vs Temperature**: Shows how rate of penetration changes with formation temperature. Useful for adjusting WOB or RPM.
+- **Base Oil vs Water**: Indicates balance in mud systems. High water may reduce lubricity or solids suspension.
+- **Correlation Heatmap**: Reveals which parameters (e.g., DSRE, dilution, discard ratio) are statistically correlated. 
+  - ✅ Helps identify what to optimize (e.g., reduce dilution or increase screen performance).
+  - 🛠️ Converts data into **decisions** (e.g., adjust mud ratios, optimize bit hydraulics).
+""")
+    st.markdown("### 🤖 Advanced Analytics & Trends")
 
 # ---------- TAB 5: Multi-well Comparison: DERRICK vs NON-DERRICK ----------
 with tabs[4]:
