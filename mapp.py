@@ -70,10 +70,32 @@ h1 {
 
 # ---------- Header ----------
 st.markdown("""
-<div style='display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; background-color: #0078d4; color: white; border-radius: 10px; margin-bottom: 1rem;'>
+<style>
+.full-header {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: #1c1c1c;
+    color: white;
+    padding: 1rem 2rem;
+    margin-bottom: 1rem;
+    border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+.full-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+</style>
+
+<div class='full-header'>
     <div style='display: flex; align-items: center;'>
         <img src='https://img.icons8.com/color/48/dashboard-layout.png' style='margin-right: 12px;'/>
-        <h2 style='margin: 0;'>Rig Comparison Dashboard</h2>
+        <h2>Rig Comparison Dashboard</h2>
     </div>
     <div style='font-size: 0.9rem;'>Powered by ProdigyIQ</div>
 </div>
@@ -86,12 +108,13 @@ if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all(
     data.drop(columns=["Efficiency Score"], inplace=True)
 
 
-# ---------- Footer ----------
+# ---------- FOOTER ----------
 st.markdown("""
-<div class='footer'>
+<div style='position: fixed; left: 0; bottom: 0; width: 100%; background-color: #1c1c1c; color: white; text-align: center; padding: 8px 0; font-size: 0.9rem; z-index: 999;'>
     &copy; 2025 Derrick Corp | Designed for drilling performance insights
 </div>
 """, unsafe_allow_html=True)
+
 
 # ---------- App Content Begins ----------
 st.markdown("Use filters to explore well-level, shaker-type, and fluid performance metrics.")
