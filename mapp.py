@@ -111,14 +111,8 @@ tabs = st.tabs(["🧾 Well Overview", "📋 Summary & Charts", "📊 Statistical
 
 # ---------- TAB 1: WELL OVERVIEW ----------
 with tabs[0]:
-    st.markdown("### 🧾 Well Overview")
-    st.markdown("Analyze well-level performance metrics as grouped column bar charts.")
-
-
     st.subheader("📄 Well Overview")
     st.markdown("Analyze well-level performance metrics as grouped column bar charts.")
-
-    st.subheader("Well Name vs Selected Metric")
 
     available_metrics = ["DSRE", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW", 
                          "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material"]
@@ -128,10 +122,10 @@ with tabs[0]:
     if "Metric" in data.columns and "Value" in data.columns:
         metric_data = data[data["Metric"] == selected_metric]
     else:
-    metric_data = pd.melt(
+        metric_data = pd.melt(
             data,
             id_vars=["Well_Name"],
-            value_vars=available_metrics,
+            value_vars=[col for col in available_metrics if col in data.columns],
             var_name="Metric",
             value_name="Value"
         )
@@ -139,8 +133,8 @@ with tabs[0]:
 
     fig = px.bar(metric_data, x="Well_Name", y="Value", title=f"Well Name vs {selected_metric}")
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown("### 🧾 Well-Level Overview")
 
+    st.markdown("### 🧾 Well-Level Overview")
     numeric_cols = [
         "DSRE", "Discard Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
         "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material",
@@ -151,40 +145,46 @@ with tabs[0]:
     melted_df = filtered[["Well_Name"] + available_cols].melt(id_vars="Well_Name", var_name="Metric", value_name="Value")
 
     if not melted_df.empty:
-        fig = px.bar(melted_df, x="Well_Name", y="Value", color="Metric", barmode="group",
-             title="Well Name vs Key Metrics", height=600)
-        
+        fig2 = px.bar(melted_df, x="Well_Name", y="Value", color="Metric", barmode="group",
+                      title="Well Name vs Key Metrics", height=600)
+        st.plotly_chart(fig2, use_container_width=True)
     else:
-    st.warning("No valid numeric data found for chart.")
+        st.warning("No valid numeric data found for chart.")
 
 
 # ---------- TAB 2: SUMMARY + CHARTS ----------
 with tabs[1]:
+    st.markdown("### 📌 Summary & Charts")
+
     chart1, chart2 = st.columns(2)
 
     with chart1:
-        st.markdown("### 📌 Depth vs DOW")
+        st.markdown("#### 📌 Depth vs DOW")
         subset = filtered.dropna(subset=["Well_Name"])
         y_cols = [col for col in ["Depth", "DOW"] if col in subset.columns]
         if y_cols:
             fig1 = px.bar(subset, x="Well_Name", y=y_cols, barmode='group', height=400,
-                  labels={"value": "Barrels", "variable": "Metric"},
-                  color_discrete_sequence=px.colors.qualitative.Prism)
+                         labels={"value": "Barrels", "variable": "Metric"},
+                         color_discrete_sequence=px.colors.qualitative.Prism)
             st.plotly_chart(fig1, use_container_width=True)
+        else:
+            st.warning("Required columns for Depth vs DOW not found.")
 
     with chart2:
-        st.markdown("### 🌈 Dilution Breakdown")
+        st.markdown("#### 🌈 Dilution Breakdown")
         y_cols = [col for col in ["Base_Oil", "Water", "Weight_Material", "Chemicals"] if col in subset.columns]
         if y_cols:
             fig2 = px.bar(subset, x="Well_Name", y=y_cols, barmode="stack", height=400,
-                  color_discrete_sequence=px.colors.qualitative.Set2)
+                         color_discrete_sequence=px.colors.qualitative.Set2)
             st.plotly_chart(fig2, use_container_width=True)
+        else:
+            st.warning("Required columns for Dilution Breakdown not found.")
 
     st.markdown("### 📈 DSRE vs Ratios")
     if "DSRE" in subset.columns:
         try:
             fig3 = px.bar(subset, x="Well_Name", y="DSRE", height=400,
-                  labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
+                         labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
             if "Discard Ratio" in subset.columns:
                 fig3.add_scatter(
                     x=subset["Well_Name"],
@@ -202,32 +202,37 @@ with tabs[1]:
                     line=dict(color="gray")
                 )
             st.plotly_chart(fig3, use_container_width=True)
-    except Exception as e:
-    st.error(f"Chart rendering error: {e}")
-
+        except Exception as e:
+            st.error(f"Chart rendering error: {e}")
+    else:
+        st.warning("DSRE column not found for chart.")
 
     st.markdown("### 📊 Additional Ratios Comparison")
     ratio_cols = [col for col in ["Dilution_Ratio", "Discard Ratio"] if col in subset.columns]
     if ratio_cols:
         try:
             fig4 = px.line(subset, x="Well_Name", y=ratio_cols, markers=True,
-                   labels={"value": "Ratio", "variable": "Metric"},
-                   title="Dilution vs SCE Loss Ratios")
+                          labels={"value": "Ratio", "variable": "Metric"},
+                          title="Dilution vs SCE Loss Ratios")
             st.plotly_chart(fig4, use_container_width=True)
-    except Exception as e:
-    st.error(f"Error rendering ratio comparison chart: {e}")
+        except Exception as e:
+            st.error(f"Error rendering ratio comparison chart: {e}")
     else:
-    st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
+        st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
 
 # ---------- TAB 3: STATISTICS & INSIGHTS ----------
 with tabs[2]:
     st.markdown("### 📊 Statistical Summary & Insights")
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
-    k2.metric("Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
-    k3.metric("Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
-    k4.metric("Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
+    with k1:
+        st.metric("Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
+    with k2:
+        st.metric("Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
+    with k3:
+        st.metric("Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
+    with k4:
+        st.metric("Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
 
     st.markdown("#### 🔍 Automatic Insights")
     if 'DSRE' in filtered.columns:
@@ -236,10 +241,7 @@ with tabs[2]:
         st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
         st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
     else:
-    st.info("DSRE column not found for efficiency insights.")
-
-    st.markdown("---")
-    st.markdown("You can extend this section with clustering, correlation matrix, or predictive modeling based on data quality.")
+        st.info("DSRE column not found for efficiency insights.")
 
 # ---------- TAB 4: ADVANCED ANALYTICS ----------
 with tabs[3]:
@@ -254,8 +256,10 @@ with tabs[3]:
                 labels={"ROP": "Rate of Penetration", "Temp": "Temperature (°F)"}
             )
             st.plotly_chart(fig_rop_temp, use_container_width=True)
-    except Exception as e:
-    st.error(f"Error rendering ROP vs Temp chart: {e}")
+        except Exception as e:
+            st.error(f"Error rendering ROP vs Temp chart: {e}")
+    else:
+        st.warning("ROP and Temp columns not found for scatter plot.")
 
     st.markdown("#### 📌 Base Oil vs Water Composition")
     if "Base_Oil" in filtered.columns and "Water" in filtered.columns:
@@ -266,8 +270,10 @@ with tabs[3]:
                 labels={"Base_Oil": "Base Oil (bbl)", "Water": "Water (bbl)"}
             )
             st.plotly_chart(fig_bo_water, use_container_width=True)
-    except Exception as e:
-    st.error(f"Error rendering Base Oil vs Water chart: {e}")
+        except Exception as e:
+            st.error(f"Error rendering Base Oil vs Water chart: {e}")
+    else:
+        st.warning("Base_Oil and Water columns not found for chart.")
 
     st.markdown("#### 📌 Correlation Heatmap")
     try:
@@ -277,10 +283,8 @@ with tabs[3]:
         fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
         st.plotly_chart(fig_corr, use_container_width=True)
     except Exception as e:
-    st.error(f"Correlation heatmap error: {e}")
+        st.error(f"Correlation heatmap error: {e}")
 
-
-# ---------- TAB 5: MULTI-WELL COMPARISON ----------
 with tabs[4]:
     st.markdown("### 🧮 Derrick vs Non-Derrick Comparison")
 
@@ -297,36 +301,43 @@ with tabs[4]:
 
         selected_metrics = st.multiselect("Select Metrics to Compare", compare_cols, default=["DSRE", "ROP", "Total_Dil"])
 
-    if selected_metrics:
-        derrick_avg = derrick_group[selected_metrics].mean().reset_index()
-        derrick_avg.columns = ["Metric", "Derrick"]
+        if selected_metrics:
+            derrick_group = filtered[filtered["Shaker_Type"] == "Derrick"]
+            non_derrick_group = filtered[filtered["Shaker_Type"] == "Non-Derrick"]
 
-        non_derrick_avg = non_derrick_group[selected_metrics].mean().reset_index()
-        non_derrick_avg.columns = ["Metric", "Non-Derrick"]
+            derrick_avg = derrick_group[selected_metrics].mean().reset_index()
+            derrick_avg.columns = ["Metric", "Derrick"]
 
-        merged_avg = pd.merge(derrick_avg, non_derrick_avg, on="Metric")
-        melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
-                             var_name="Shaker_Type", value_name="Average")
+            non_derrick_avg = non_derrick_group[selected_metrics].mean().reset_index()
+            non_derrick_avg.columns = ["Metric", "Non-Derrick"]
 
-        fig = px.bar(
-            melted_avg, x="Metric", y="Average", color="Shaker_Type", 
-            barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+            merged_avg = pd.merge(derrick_avg, non_derrick_avg, on="Metric")
+            melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
+                                 var_name="Shaker_Type", value_name="Average")
+
+            fig = px.bar(
+                melted_avg, x="Metric", y="Average", color="Shaker_Type", 
+                barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Please select at least one metric to compare.")
+
+        try:
+            scoring_df = filtered.copy()
+            if "DSRE" in scoring_df.columns:
+                scoring_df["Efficiency Score"] = (
+                    scoring_df["DSRE"].fillna(0) * 100
+                    - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
+                    - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
+                )
+                rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(
+                    by="Efficiency Score", ascending=False
+                ).reset_index(drop=True)
+                st.dataframe(rank_df, use_container_width=True)
+            else:
+                st.warning("DSRE column missing for scoring.")
+        except Exception as e:
+            st.error(f"Comparison logic error: {e}")
     else:
-    st.info("Please select at least one metric to compare.")
-    scoring_df = filtered.copy()
-    if "DSRE" in scoring_df.columns:
-        scoring_df["Efficiency Score"] = (
-        scoring_df["DSRE"].fillna(0) * 100
-        - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
-        - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
-                    )
-        rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
-        st.dataframe(rank_df, use_container_width=True)
-    else:
-    st.warning("DSRE column missing for scoring.")
-    except Exception as e:
-    st.error(f"Comparison logic error: {e}")
-    else:
-    st.warning("'flowline_Shakers' column not found in dataset.")
+        st.warning("'flowline_Shakers' column not found in dataset.")
