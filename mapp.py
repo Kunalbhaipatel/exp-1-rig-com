@@ -189,7 +189,7 @@ with tabs[1]:
                 fig3.add_scatter(x=subset["Well_Name"], y=subset["Discard Ratio"], mode='lines+markers', name="SCE Loss Ratio",
                          line=dict(color="red"))
             if "Dilution_Ratio" in subset.columns:
-        fig3.add_scatter(x=subset["Well_Name"], y=subset["Dilution_Ratio"], mode='lines+markers', name="Dilution Ratio",
+            fig3.add_scatter(x=subset["Well_Name"], y=subset["Dilution_Ratio"], mode='lines+markers', name="Dilution Ratio",
                          line=dict(color="gray"))
             st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
