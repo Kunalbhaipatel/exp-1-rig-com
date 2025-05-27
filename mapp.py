@@ -217,7 +217,7 @@ with tabs[1]:
     except Exception as e:
     st.error(f"Error rendering ratio comparison chart: {e}")
     else:
-        st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
+    st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
 
 # ---------- TAB 3: STATISTICS & INSIGHTS ----------
@@ -236,7 +236,7 @@ with tabs[2]:
         st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
         st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
     else:
-        st.info("DSRE column not found for efficiency insights.")
+    st.info("DSRE column not found for efficiency insights.")
 
     st.markdown("---")
     st.markdown("You can extend this section with clustering, correlation matrix, or predictive modeling based on data quality.")
@@ -314,7 +314,7 @@ with tabs[4]:
         )
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("Please select at least one metric to compare.")
+    st.info("Please select at least one metric to compare.")
     scoring_df = filtered.copy()
     if "DSRE" in scoring_df.columns:
         scoring_df["Efficiency Score"] = (
