@@ -14,6 +14,46 @@ data = pd.read_csv("sample_rig_dashboard_data.csv")
 
 st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_icon="📊")
 
+st.markdown('''
+<style>
+[data-testid="stMetric"] {
+  background-color: #2f2f2f !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+.stDataFrame {
+  background-color: #2f2f2f !important;
+  color: white !important;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+.css-ocqkz7, .element-container {
+  background-color: #2a2a2a !important;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 6px rgba(255,255,255,0.05);
+}
+.stTabs [aria-selected="true"] {
+  background-color: #0078d4 !important;
+  color: white !important;
+  font-weight: bold;
+}
+.full-header {
+  background-color: #1c1c1c;
+  color: white;
+}
+.full-header h2 {
+  color: white;
+}
+.full-header img {
+  filter: brightness(0) invert(1);
+}
+</style>
+''', unsafe_allow_html=True)
 st.markdown("""
 <style>
 /* ---------- General Layout ---------- */
