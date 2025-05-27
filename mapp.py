@@ -152,7 +152,7 @@ with tabs[0]:
 
     if not melted_df.empty:
         fig = px.bar(melted_df, x="Well_Name", y="Value", color="Metric", barmode="group",
-                     title="Well Name vs Key Metrics", height=600)
+             title="Well Name vs Key Metrics", height=600)
         
     else:
         st.warning("No valid numeric data found for chart.")
@@ -168,8 +168,8 @@ with tabs[1]:
         y_cols = [col for col in ["Depth", "DOW"] if col in subset.columns]
         if y_cols:
             fig1 = px.bar(subset, x="Well_Name", y=y_cols, barmode='group', height=400,
-                          labels={"value": "Barrels", "variable": "Metric"},
-                          color_discrete_sequence=px.colors.qualitative.Prism)
+                  labels={"value": "Barrels", "variable": "Metric"},
+                  color_discrete_sequence=px.colors.qualitative.Prism)
             st.plotly_chart(fig1, use_container_width=True)
 
     with chart2:
@@ -177,20 +177,20 @@ with tabs[1]:
         y_cols = [col for col in ["Base_Oil", "Water", "Weight_Material", "Chemicals"] if col in subset.columns]
         if y_cols:
             fig2 = px.bar(subset, x="Well_Name", y=y_cols, barmode="stack", height=400,
-                          color_discrete_sequence=px.colors.qualitative.Set2)
+                  color_discrete_sequence=px.colors.qualitative.Set2)
             st.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("### 📈 DSRE vs Ratios")
     if "DSRE" in subset.columns:
         try:
             fig3 = px.bar(subset, x="Well_Name", y="DSRE", height=400,
-                          labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
+                  labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
             if "SCE_Loss_Ratio" in subset.columns:
-                fig3.add_scatter(x=subset["Well_Name"], y=subset["SCE_Loss_Ratio"], mode='lines+markers', name="SCE Loss Ratio",
-                                 line=dict(color="red"))
+        fig3.add_scatter(x=subset["Well_Name"], y=subset["SCE_Loss_Ratio"], mode='lines+markers', name="SCE Loss Ratio",
+                         line=dict(color="red"))
             if "Dilution_Ratio" in subset.columns:
-                fig3.add_scatter(x=subset["Well_Name"], y=subset["Dilution_Ratio"], mode='lines+markers', name="Dilution Ratio",
-                                 line=dict(color="gray"))
+        fig3.add_scatter(x=subset["Well_Name"], y=subset["Dilution_Ratio"], mode='lines+markers', name="Dilution Ratio",
+                         line=dict(color="gray"))
             st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
             st.error(f"Chart rendering error: {e}")
@@ -201,8 +201,8 @@ with tabs[1]:
     if ratio_cols:
         try:
             fig4 = px.line(subset, x="Well_Name", y=ratio_cols, markers=True,
-                           labels={"value": "Ratio", "variable": "Metric"},
-                           title="Dilution vs SCE Loss Ratios")
+                   labels={"value": "Ratio", "variable": "Metric"},
+                   title="Dilution vs SCE Loss Ratios")
             st.plotly_chart(fig4, use_container_width=True)
         except Exception as e:
             st.error(f"Error rendering ratio comparison chart: {e}")
@@ -315,8 +315,8 @@ with tabs[4]:
                     rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
                     st.dataframe(rank_df, use_container_width=True)
                 else:
-                    st.warning("DSRE column missing for scoring.")
+            st.warning("DSRE column missing for scoring.")
             except Exception as e:
-                st.error(f"Comparison logic error: {e}")
+        st.error(f"Comparison logic error: {e}")
     else:
         st.warning("'flowline_Shakers' column not found in dataset.")
