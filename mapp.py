@@ -61,9 +61,12 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 # Drop Efficiency Score column if it exists but has no values
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
-# Upload Section# Load default dataset only
-default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
-data = pd.read_csv(default_path)
+with st.expander("📁 Upload your CSV file (optional)", expanded=True):
+    uploaded_file = st.file_uploader("", type="csv")
+  if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
+else:
+    data = pd.read_csv(default_path)
 
 
 
