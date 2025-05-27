@@ -57,13 +57,10 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 </style>
 """, unsafe_allow_html=True)
 
-# Upload Sectionimport os
-
+# Upload Section
+with st.expander("📁 Upload your CSV file", expanded=True):
 import os
-import pandas as pd
-
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
-
 with st.expander("📁 Upload your CSV file (optional)", expanded=True):
     uploaded_file = st.file_uploader("", type="csv")
 
@@ -73,7 +70,6 @@ if uploaded_file is not None:
 else:
     data = pd.read_csv(default_path)
     st.info("ℹ️ Using default sample dataset.")
-
 
 # Filters
 st.title("📊 Rig Comparison Dashboard")
@@ -128,7 +124,7 @@ with tabs[0]:
     if not melted_df.empty:
         fig = px.bar(melted_df, x="Well_Name", y="Value", color="Metric", barmode="group",
                      title="Well Name vs Key Metrics", height=600)
-        st.plotly_chart(fig, use_container_width=True)
+        
     else:
         st.warning("No valid numeric data found for chart.")
 
@@ -273,7 +269,7 @@ with tabs[4]:
                     title="Derrick vs Non-Derrick Comparison by Well and Metric", height=600,
                     color_discrete_map={"Derrick": "#007635", "Non-Derrick": "lightgrey"}
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                
 
                 st.markdown("### 📋 Group Summary Statistics")
                 summary_metrics = [col for col in ["DSRE", "ROP", "Total_SCE", "Total_Dil", "Dilution_Ratio", "SCE_Loss_Ratio"] if col in filtered.columns]
