@@ -58,16 +58,13 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 </style>
 """, unsafe_allow_html=True)
 
-# ✅ Load permanent sample dataset
-import os
-
+# Load permanent sample dataset
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
 data = pd.read_csv(default_path)
 
-# ✅ Clean up any empty score columns
+# Clean up any empty score columns
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
-
 # Filters
 st.title("📊 Rig Comparison Dashboard")
 
