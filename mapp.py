@@ -115,10 +115,32 @@ with tabs[0]:
     st.markdown("Analyze well-level performance metrics as grouped column bar charts.")
 
 
+
     st.subheader("📄 Well Overview")
     st.markdown("Analyze well-level performance metrics as grouped column bar charts.")
 
-    st.subheader("Well Name vs Selected Metric")
+    available_metrics = ["DSRE", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW", 
+                         "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material"]
+
+    # Filter only existing columns
+    valid_metrics = [m for m in available_metrics if m in data.columns]
+
+    selected_metric = st.selectbox("Choose a metric to visualize", valid_metrics)
+
+    if "Metric" in data.columns and "Value" in data.columns:
+        metric_data = data[data["Metric"] == selected_metric]
+    else:
+        melted_data = pd.melt(
+            data,
+            id_vars=["Well Name"],
+            value_vars=valid_metrics,
+            var_name="Metric",
+            value_name="Value"
+        )
+        metric_data = melted_data[melted_data["Metric"] == selected_metric]
+
+    fig = px.bar(metric_data, x="Well Name", y="Value", title=f"Well Name vs {selected_metric}")
+    st.plotly_chart(fig, use_container_width=True)
 
     available_metrics = ["DSRE", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW", 
                          "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material"]
