@@ -9,43 +9,50 @@ data = pd.read_csv("sample_rig_dashboard_data.csv")
 
 
 st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_icon="📊")
+# ---------- THEME-AWARE STYLING ----------
+import streamlit as st
 
-st.markdown('''
+st.markdown("""
 <style>
+:root {
+  --header-color-light: #004578;
+  --header-color-dark: #ffffff;
+}
+
+h2 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+[data-testid="stMetric"] {
+  border-radius: 12px;
+  border: 1px solid #aaa;
+  padding: 1rem;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  background-color: var(--metric-bg, white);
+  color: var(--metric-color, black);
+}
+
 @media (prefers-color-scheme: dark) {
   html, body {
     background-color: #121212;
+  }
+  h2 {
+    color: var(--header-color-dark);
+  }
+  [data-testid="stMetric"] {
+    background-color: #1e1e1e;
     color: white;
   }
-
-  [data-testid="stMetric"] {
-    background-color: #1f1f1f !important;
-    color: white !important;
-    border: 1px solid #444;
-    box-shadow: 0 0 10px rgba(255,255,255,0.05);
-  }
-
-  .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown p,
-  .css-10trblm, .css-1v3fvcr, .css-1cpxqw2 {
-    color: white !important;
-  }
-
-  .stTabs [data-baseweb="tab"] {
-    color: #ccc !important;
-  }
-
-  .stTabs [aria-selected="true"] {
-    background-color: #0078d4 !important;
-    color: white !important;
-  }
-
-  .stDataFrame {
-    background-color: #1a1a1a !important;
-    color: white !important;
+}
+@media (prefers-color-scheme: light) {
+  h2 {
+    color: var(--header-color-light);
   }
 }
 </style>
-''', unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 /* ---------- General Layout ---------- */
