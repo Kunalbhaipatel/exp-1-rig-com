@@ -299,7 +299,52 @@ with tabs[2]:
     else:
         st.info("DSRE column not found for efficiency insights.")
 
-# ---------- TAB 4: ADVANCED COMPARISON: DERRICK vs NON-DERRICK ----------
+
+# ---------- TAB 4: ADVANCED ANALYTICS ----------
+with tabs[3]:
+    st.markdown("### 🤖 Advanced Analytics & Trends")
+
+    st.markdown("#### 📌 ROP vs Temperature")
+    if "ROP" in filtered.columns and "Temp" in filtered.columns:
+        try:
+            fig_rop_temp = px.scatter(
+                filtered, x="ROP", y="Temp", color="Well_Name",
+                title="ROP vs Temperature",
+                labels={"ROP": "Rate of Penetration", "Temp": "Temperature (°F)"}
+            )
+            st.plotly_chart(fig_rop_temp, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error rendering ROP vs Temp chart: {e}")
+    else:
+        st.warning("ROP and Temp columns not found for scatter plot.")
+
+    st.markdown("#### 📌 Base Oil vs Water Composition")
+    if "Base_Oil" in filtered.columns and "Water" in filtered.columns:
+        try:
+            fig_bo_water = px.scatter(
+                filtered, x="Base_Oil", y="Water", size="Total_Dil",
+                color="Well_Name", title="Base Oil vs Water Breakdown",
+                labels={"Base_Oil": "Base Oil (bbl)", "Water": "Water (bbl)"}
+            )
+            st.plotly_chart(fig_bo_water, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error rendering Base Oil vs Water chart: {e}")
+    else:
+        st.warning("Base_Oil and Water columns not found for chart.")
+
+    st.markdown("#### 📌 Correlation Heatmap")
+    try:
+        corr_cols = ["DSRE", "Total_SCE", "Total_Dil", "Discard Ratio", "Dilution_Ratio", "ROP", "AMW", "Haul_OFF"]
+        corr_data = filtered[corr_cols].dropna()
+        corr_matrix = corr_data.corr()
+        fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
+        st.plotly_chart(fig_corr, use_container_width=True)
+    except Exception as e:
+        st.error(f"Correlation heatmap error: {e}")
+
+
+
+# ---------- TAB 5: Multi-well Comparison: DERRICK vs NON-DERRICK ----------
 with tabs[4]:
     st.markdown("### 🧮 Derrick vs Non-Derrick Comparison")
     st.markdown("Compare key performance metrics by shaker type. Derrick = 🟩, Non-Derrick = 🟥")
