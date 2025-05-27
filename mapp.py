@@ -85,20 +85,6 @@ data = pd.read_csv(default_path)
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
 
-# ---------- Sidebar Insights ----------
-with st.sidebar:
-    st.markdown("## 🧠 Insights Summary")
-    st.markdown("""
-Use this dashboard to turn operational data into **performance decisions**:
-
-- **ROP vs Temp**: Spot formation changes or bit inefficiency.
-- **Base Oil vs Water**: Balance lubricity vs solids carrying.
-- **DSRE vs Ratios**: Detect solids removal effectiveness.
-- **Derrick vs Non-Derrick**: Justify shaker upgrades.
-- **Efficiency Score**: Combines DSRE, dilution, and discard.
-
-🎯 Goal: Reduce dilution, minimize waste, and improve screen selection.
-""")
 
 # ---------- Footer ----------
 st.markdown("""
@@ -108,7 +94,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------- App Content Begins ----------
-st.title("📊 Rig Comparison Dashboard")
 st.markdown("Use filters to explore well-level, shaker-type, and fluid performance metrics.")
 
 # Placeholder: You can now paste the full app logic (filters, tabs, charts, metrics...)
