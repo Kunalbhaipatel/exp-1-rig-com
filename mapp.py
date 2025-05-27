@@ -221,7 +221,51 @@ with tabs[1]:
         st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
 
-# ---------- TAB 3: STATISTICS & INSIGHTS ----------
+
+# ---------- TAB 3: STATISTICS & INSIGHTS (Enhanced) ----------
+with tabs[2]:
+    st.markdown("### 📊 Statistical Summary & Insights")
+    k1, k2, k3, k4 = st.columns(4)
+    with k1:
+        st.metric("Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
+    with k2:
+        st.metric("Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
+    with k3:
+        st.metric("Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
+    with k4:
+        st.metric("Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
+
+    k5, k6, k7, k8 = st.columns(4)
+    with k5:
+        st.metric("Max Depth", f"{filtered['Depth'].max():,.0f}" if "Depth" in filtered.columns else "N/A")
+    with k6:
+        st.metric("Avg LGS%", f"{filtered['Average_LGS%'].mean():.2f}" if "Average_LGS%" in filtered.columns else "N/A")
+
+    with k7:
+        if "Dilution_Ratio" in filtered.columns:
+            avg_dil = filtered["Dilution_Ratio"].mean()
+            color = "🟢" if avg_dil < 1 else "🟡" if avg_dil < 2 else "🔴"
+            st.metric("Dilution Ratio", f"{avg_dil:.2f} {color}")
+        else:
+            st.metric("Dilution Ratio", "N/A")
+
+    with k8:
+        if "Discard Ratio" in filtered.columns:
+            avg_disc = filtered["Discard Ratio"].mean()
+            color = "🟢" if avg_disc < 0.1 else "🟡" if avg_disc < 0.2 else "🔴"
+            st.metric("Discard Ratio", f"{avg_disc:.2f} {color}")
+        else:
+            st.metric("Discard Ratio", "N/A")
+
+    st.markdown("#### 🔍 Automatic Insights")
+    if 'DSRE' in filtered.columns:
+        high_eff = filtered[filtered['DSRE'] > 0.9]
+        low_eff = filtered[filtered['DSRE'] < 0.6]
+        st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
+        st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
+    else:
+        st.info("DSRE column not found for efficiency insights.")
+
 with tabs[2]:
     st.markdown("### 📊 Statistical Summary & Insights")
     k1, k2, k3, k4 = st.columns(4)
