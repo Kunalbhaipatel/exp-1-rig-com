@@ -7,13 +7,10 @@ import os
 
 st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_icon="📊")
 
-# Custom Styling
+# ---------- Styling ----------
 st.markdown("""
 <style>
 body { background-color: #f5f7fa; }
-header, .reportview-container .main .block-container {
-    padding-top: 0rem;
-}
 h1 {
   font-size: 2.4rem;
   font-weight: 700;
@@ -57,10 +54,6 @@ h1 {
   border: 1px solid #d0d6dd;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
-footer {
-  visibility: hidden;
-}
-# Custom Footer
 .footer {
     position: fixed;
     left: 0;
@@ -75,7 +68,7 @@ footer {
 </style>
 """, unsafe_allow_html=True)
 
-# Graphical Header
+# ---------- Header ----------
 st.markdown("""
 <div style='display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; background-color: #0078d4; color: white; border-radius: 10px; margin-bottom: 1rem;'>
     <div style='display: flex; align-items: center;'>
@@ -86,22 +79,40 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Load dataset
+# ---------- Load Data ----------
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
 data = pd.read_csv(default_path)
-
-# Drop if empty
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
 
-# Footer
+# ---------- Sidebar Insights ----------
+with st.sidebar:
+    st.markdown("## 🧠 Insights Summary")
+    st.markdown("""
+Use this dashboard to turn operational data into **performance decisions**:
+
+- **ROP vs Temp**: Spot formation changes or bit inefficiency.
+- **Base Oil vs Water**: Balance lubricity vs solids carrying.
+- **DSRE vs Ratios**: Detect solids removal effectiveness.
+- **Derrick vs Non-Derrick**: Justify shaker upgrades.
+- **Efficiency Score**: Combines DSRE, dilution, and discard.
+
+🎯 Goal: Reduce dilution, minimize waste, and improve screen selection.
+""")
+
+# ---------- Footer ----------
 st.markdown("""
 <div class='footer'>
     &copy; 2025 Derrick Corp | Designed for drilling performance insights
 </div>
 """, unsafe_allow_html=True)
 
-# You can continue with filters, tabs, charts, and insights here...
+# ---------- App Content Begins ----------
+st.title("📊 Rig Comparison Dashboard")
+st.markdown("Use filters to explore well-level, shaker-type, and fluid performance metrics.")
+
+# Placeholder: You can now paste the full app logic (filters, tabs, charts, metrics...)
+# and insert the previously generated tooltips inside each tab as needed.
 # Filters
 st.title("📊 Rig Comparison Dashboard")
 
