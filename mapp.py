@@ -222,115 +222,60 @@ with tabs[1]:
 
 
 
-# ---------- TAB 3: STATISTICS & INSIGHTS (Enhanced) ----------
+# ---------- TAB 3: STATISTICS & INSIGHTS (ENHANCED) ----------
 with tabs[2]:
     st.markdown("### 📊 Statistical Summary & Insights")
+
     k1, k2, k3, k4 = st.columns(4)
     with k1:
-        st.metric("Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
+        st.metric("📈 Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
     with k2:
-        st.metric("Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
+        st.metric("🚛 Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
     with k3:
-        st.metric("Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
+        st.metric("🧪 Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
     with k4:
-        st.metric("Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
+        st.metric("💧 Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
 
     k5, k6, k7, k8 = st.columns(4)
     with k5:
-        st.metric("Max Depth", f"{filtered['Depth'].max():,.0f}" if "Depth" in filtered.columns else "N/A")
+        max_depth = filtered['Depth'].max() if "Depth" in filtered.columns else None
+        st.metric("⛏️ Max Depth", f"{max_depth:,.0f}" if pd.notnull(max_depth) else "N/A")
+
     with k6:
-        st.metric("Avg LGS%", f"{filtered['Average_LGS%'].mean():.2f}" if "Average_LGS%" in filtered.columns else "N/A")
+        avg_lgs = filtered["Average_LGS%"].mean() if "Average_LGS%" in filtered.columns else None
+        st.metric("🌀 Avg LGS%", f"{avg_lgs:.2f}" if pd.notnull(avg_lgs) else "N/A")
 
     with k7:
         if "Dilution_Ratio" in filtered.columns:
             avg_dil = filtered["Dilution_Ratio"].mean()
-            color = "🟢" if avg_dil < 1 else "🟡" if avg_dil < 2 else "🔴"
-            st.metric("Dilution Ratio", f"{avg_dil:.2f} {color}")
+            dil_icon = "🟢" if avg_dil < 1 else "🟡" if avg_dil < 2 else "🔴"
+            st.metric("🥄 Dilution Ratio", f"{avg_dil:.2f} {dil_icon}")
         else:
-            st.metric("Dilution Ratio", "N/A")
+            st.metric("🥄 Dilution Ratio", "N/A")
 
     with k8:
         if "Discard Ratio" in filtered.columns:
             avg_disc = filtered["Discard Ratio"].mean()
-            color = "🟢" if avg_disc < 0.1 else "🟡" if avg_disc < 0.2 else "🔴"
-            st.metric("Discard Ratio", f"{avg_disc:.2f} {color}")
+            disc_icon = "🟢" if avg_disc < 0.1 else "🟡" if avg_disc < 0.2 else "🔴"
+            st.metric("🗑️ Discard Ratio", f"{avg_disc:.2f} {disc_icon}")
         else:
-            st.metric("Discard Ratio", "N/A")
+            st.metric("🗑️ Discard Ratio", "N/A")
 
+    # --- Insights Summary ---
     st.markdown("#### 🔍 Automatic Insights")
+
     if 'DSRE' in filtered.columns:
         high_eff = filtered[filtered['DSRE'] > 0.9]
         low_eff = filtered[filtered['DSRE'] < 0.6]
-        st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
-        st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
+        st.success(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
+        st.warning(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
     else:
         st.info("DSRE column not found for efficiency insights.")
 
-with tabs[2]:
-    st.markdown("### 📊 Statistical Summary & Insights")
-    k1, k2, k3, k4 = st.columns(4)
-    with k1:
-        st.metric("Mean DSRE", f"{filtered['DSRE'].mean()*100:.2f}%")
-    with k2:
-        st.metric("Max Haul Off", f"{filtered['Haul_OFF'].max():,.0f}")
-    with k3:
-        st.metric("Avg SCE", f"{filtered['Total_SCE'].mean():,.2f}")
-    with k4:
-        st.metric("Avg Dilution", f"{filtered['Total_Dil'].mean():,.2f}")
-
-    st.markdown("#### 🔍 Automatic Insights")
-    if 'DSRE' in filtered.columns:
-        high_eff = filtered[filtered['DSRE'] > 0.9]
-        low_eff = filtered[filtered['DSRE'] < 0.6]
-        st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
-        st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
-    else:
-        st.info("DSRE column not found for efficiency insights.")
-
-# ---------- TAB 4: ADVANCED ANALYTICS ----------
-with tabs[3]:
-    st.markdown("### 🤖 Advanced Analytics & Trends")
-
-    st.markdown("#### 📌 ROP vs Temperature")
-    if "ROP" in filtered.columns and "Temp" in filtered.columns:
-        try:
-            fig_rop_temp = px.scatter(
-                filtered, x="ROP", y="Temp", color="Well_Name",
-                title="ROP vs Temperature",
-                labels={"ROP": "Rate of Penetration", "Temp": "Temperature (°F)"}
-            )
-            st.plotly_chart(fig_rop_temp, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error rendering ROP vs Temp chart: {e}")
-    else:
-        st.warning("ROP and Temp columns not found for scatter plot.")
-
-    st.markdown("#### 📌 Base Oil vs Water Composition")
-    if "Base_Oil" in filtered.columns and "Water" in filtered.columns:
-        try:
-            fig_bo_water = px.scatter(
-                filtered, x="Base_Oil", y="Water", size="Total_Dil",
-                color="Well_Name", title="Base Oil vs Water Breakdown",
-                labels={"Base_Oil": "Base Oil (bbl)", "Water": "Water (bbl)"}
-            )
-            st.plotly_chart(fig_bo_water, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error rendering Base Oil vs Water chart: {e}")
-    else:
-        st.warning("Base_Oil and Water columns not found for chart.")
-
-    st.markdown("#### 📌 Correlation Heatmap")
-    try:
-        corr_cols = ["DSRE", "Total_SCE", "Total_Dil", "Discard Ratio", "Dilution_Ratio", "ROP", "AMW", "Haul_OFF"]
-        corr_data = filtered[corr_cols].dropna()
-        corr_matrix = corr_data.corr()
-        fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
-        st.plotly_chart(fig_corr, use_container_width=True)
-    except Exception as e:
-        st.error(f"Correlation heatmap error: {e}")
-
+# ---------- TAB 4: ADVANCED COMPARISON: DERRICK vs NON-DERRICK ----------
 with tabs[4]:
     st.markdown("### 🧮 Derrick vs Non-Derrick Comparison")
+    st.markdown("Compare key performance metrics by shaker type. Derrick = 🟩, Non-Derrick = 🟥")
 
     compare_cols = [
         "DSRE", "Discard Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
@@ -339,11 +284,12 @@ with tabs[4]:
     ]
 
     if "flowline_Shakers" in filtered.columns:
+        # Classify Derrick vs Non-Derrick
         filtered["Shaker_Type"] = filtered["flowline_Shakers"].apply(
             lambda x: "Derrick" if isinstance(x, str) and "derrick" in x.lower() else "Non-Derrick"
         )
 
-        selected_metrics = st.multiselect("Select Metrics to Compare", compare_cols, default=["DSRE", "ROP", "Total_Dil"])
+        selected_metrics = st.multiselect("📌 Select Metrics to Compare", compare_cols, default=["DSRE", "ROP", "Total_Dil"])
 
         if selected_metrics:
             derrick_group = filtered[filtered["Shaker_Type"] == "Derrick"]
@@ -356,32 +302,43 @@ with tabs[4]:
             non_derrick_avg.columns = ["Metric", "Non-Derrick"]
 
             merged_avg = pd.merge(derrick_avg, non_derrick_avg, on="Metric")
-            melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
-                                 var_name="Shaker_Type", value_name="Average")
+            melted_avg = pd.melt(
+                merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
+                var_name="Shaker_Type", value_name="Average"
+            )
 
+            # Bar chart with color mapping
             fig = px.bar(
-                melted_avg, x="Metric", y="Average", color="Shaker_Type", 
-                barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
+                melted_avg, x="Metric", y="Average", color="Shaker_Type",
+                color_discrete_map={"Derrick": "#007535", "Non-Derrick": "gray"},
+                barmode="group", title="📊 Average Metrics: Derrick vs Non-Derrick"
             )
             st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("Please select at least one metric to compare.")
 
-        try:
+            # Ranking Table with Emoji
             scoring_df = filtered.copy()
             if "DSRE" in scoring_df.columns:
                 scoring_df["Efficiency Score"] = (
                     scoring_df["DSRE"].fillna(0) * 100
-                    - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
-                    - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
+                    - scoring_df.get("Dilution_Ratio", 0).fillna(0) * 10
+                    - scoring_df.get("Discard Ratio", 0).fillna(0) * 10
                 )
-                rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(
-                    by="Efficiency Score", ascending=False
-                ).reset_index(drop=True)
-                st.dataframe(rank_df, use_container_width=True)
+
+                scoring_df["Flag"] = scoring_df["Shaker_Type"].map({
+                    "Derrick": "🟩 Derrick",
+                    "Non-Derrick": "🟥 Non-Derrick"
+                })
+
+                rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score", "Flag"]]\
+                    .sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
+
+                st.markdown("### 🏅 Ranked Wells by Efficiency Score")
+                st.dataframe(rank_df.drop(columns=["Shaker_Type"]), use_container_width=True)
             else:
-                st.warning("DSRE column missing for scoring.")
-        except Exception as e:
-            st.error(f"Comparison logic error: {e}")
+                st.warning("⚠️ DSRE column missing for scoring.")
+        else:
+            st.info("ℹ️ Please select at least one metric to compare.")
     else:
-        st.warning("'flowline_Shakers' column not found in dataset.")
+        st.warning("⚠️ 'flowline_Shakers' column not found in dataset.")
+with st.expander("📁 Upload your CSV file (optional)", expanded=False):
+    uploaded_file = st.file_uploader("", type="csv")
