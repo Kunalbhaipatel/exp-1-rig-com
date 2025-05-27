@@ -60,14 +60,14 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 
 # Upload Section
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
-# with st.expander("📁 Upload your CSV file (optional)", expanded=True):
-#     uploaded_file = st.file_uploader("", type="csv")
+with st.expander("📁 Upload your CSV file (optional)", expanded=True):
+    uploaded_file = st.file_uploader("", type="csv")
 
-# if uploaded_file is not None:
-#     data = pd.read_csv(uploaded_file)
+if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
     st.success("✅ Custom CSV uploaded successfully.")
-# else:
-data = pd.read_csv(default_path)
+else:
+    data = pd.read_csv(default_path)
     st.info("ℹ️ Using default sample dataset.")
 
 # Drop Efficiency Score column if it exists but has no values
@@ -121,7 +121,7 @@ with tabs[0]:
 
     if "Metric" in data.columns and "Value" in data.columns:
         metric_data = data[data["Metric"] == selected_metric]
-    # else:
+    else:
         metric_data = pd.melt(
             data,
             id_vars=["Well_Name"],
@@ -148,7 +148,7 @@ with tabs[0]:
         fig2 = px.bar(melted_df, x="Well_Name", y="Value", color="Metric", barmode="group",
                       title="Well Name vs Key Metrics", height=600)
         st.plotly_chart(fig2, use_container_width=True)
-    # else:
+    else:
         st.warning("No valid numeric data found for chart.")
 
 
@@ -167,7 +167,7 @@ with tabs[1]:
                          labels={"value": "Barrels", "variable": "Metric"},
                          color_discrete_sequence=px.colors.qualitative.Prism)
             st.plotly_chart(fig1, use_container_width=True)
-        # else:
+        else:
             st.warning("Required columns for Depth vs DOW not found.")
 
     with chart2:
@@ -177,7 +177,7 @@ with tabs[1]:
             fig2 = px.bar(subset, x="Well_Name", y=y_cols, barmode="stack", height=400,
                          color_discrete_sequence=px.colors.qualitative.Set2)
             st.plotly_chart(fig2, use_container_width=True)
-        # else:
+        else:
             st.warning("Required columns for Dilution Breakdown not found.")
 
     st.markdown("### 📈 DSRE vs Ratios")
@@ -204,7 +204,7 @@ with tabs[1]:
             st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
             st.error(f"Chart rendering error: {e}")
-    # else:
+    else:
         st.warning("DSRE column not found for chart.")
 
     st.markdown("### 📊 Additional Ratios Comparison")
@@ -217,7 +217,7 @@ with tabs[1]:
             st.plotly_chart(fig4, use_container_width=True)
         except Exception as e:
             st.error(f"Error rendering ratio comparison chart: {e}")
-    # else:
+    else:
         st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
 
@@ -246,7 +246,7 @@ with tabs[2]:
             avg_dil = filtered["Dilution_Ratio"].mean()
             color = "🟢" if avg_dil < 1 else "🟡" if avg_dil < 2 else "🔴"
             st.metric("Dilution Ratio", f"{avg_dil:.2f} {color}")
-        # else:
+        else:
             st.metric("Dilution Ratio", "N/A")
 
     with k8:
@@ -254,7 +254,7 @@ with tabs[2]:
             avg_disc = filtered["Discard Ratio"].mean()
             color = "🟢" if avg_disc < 0.1 else "🟡" if avg_disc < 0.2 else "🔴"
             st.metric("Discard Ratio", f"{avg_disc:.2f} {color}")
-        # else:
+        else:
             st.metric("Discard Ratio", "N/A")
 
     st.markdown("#### 🔍 Automatic Insights")
@@ -263,7 +263,7 @@ with tabs[2]:
         low_eff = filtered[filtered['DSRE'] < 0.6]
         st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
         st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
-    # else:
+    else:
         st.info("DSRE column not found for efficiency insights.")
 
 with tabs[2]:
@@ -284,7 +284,7 @@ with tabs[2]:
         low_eff = filtered[filtered['DSRE'] < 0.6]
         st.markdown(f"✅ **High Efficiency Wells (DSRE > 90%)**: {len(high_eff)}")
         st.markdown(f"⚠️ **Low Efficiency Wells (DSRE < 60%)**: {len(low_eff)}")
-    # else:
+    else:
         st.info("DSRE column not found for efficiency insights.")
 
 # ---------- TAB 4: ADVANCED ANALYTICS ----------
@@ -302,7 +302,7 @@ with tabs[3]:
             st.plotly_chart(fig_rop_temp, use_container_width=True)
         except Exception as e:
             st.error(f"Error rendering ROP vs Temp chart: {e}")
-    # else:
+    else:
         st.warning("ROP and Temp columns not found for scatter plot.")
 
     st.markdown("#### 📌 Base Oil vs Water Composition")
@@ -316,7 +316,7 @@ with tabs[3]:
             st.plotly_chart(fig_bo_water, use_container_width=True)
         except Exception as e:
             st.error(f"Error rendering Base Oil vs Water chart: {e}")
-    # else:
+    else:
         st.warning("Base_Oil and Water columns not found for chart.")
 
     st.markdown("#### 📌 Correlation Heatmap")
@@ -359,20 +359,12 @@ with tabs[4]:
             melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
                                  var_name="Shaker_Type", value_name="Average")
 
-            # Custom colors for comparison bars
-derrick_color = "#007635"
-non_derrick_color = "gray"
-
-fig = px.bar(
-    melted_avg, x="Metric", y="Average", color="Shaker_Type",
-    color_discrete_map={
-        "Derrick": derrick_color,
-        "Non-Derrick": non_derrick_color
-    },
-    barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
-)
+            fig = px.bar(
+                melted_avg, x="Metric", y="Average", color="Shaker_Type", 
+                barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
+            )
             st.plotly_chart(fig, use_container_width=True)
-        # else:
+        else:
             st.info("Please select at least one metric to compare.")
 
         try:
@@ -383,27 +375,13 @@ fig = px.bar(
                     - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
                     - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
                 )
-                if "DSRE" in scoring_df.columns:
-    scoring_df["Efficiency Score"] = (
-        scoring_df["DSRE"].fillna(0) * 100
-        - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
-        - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
-    )
-    scoring_df["Score_Level"] = scoring_df["Efficiency Score"].apply(
-        lambda x: "🟢" if x >= 80 else "🟡" if x >= 60 else "🔴"
-    )
-    rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score", "Score_Level"]]
-    rank_df["Efficiency Score"] = rank_df["Efficiency Score"].round(2).astype(str) + " " + rank_df["Score_Level"]
-    st.dataframe(rank_df.drop(columns=["Score_Level"]), use_container_width=True)
-
-    # sort based on score
-    rank_df = rank_df.sort_values(
+                rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(
                     by="Efficiency Score", ascending=False
                 ).reset_index(drop=True)
                 st.dataframe(rank_df, use_container_width=True)
-            # else:
+            else:
                 st.warning("DSRE column missing for scoring.")
         except Exception as e:
             st.error(f"Comparison logic error: {e}")
-    # else:
+    else:
         st.warning("'flowline_Shakers' column not found in dataset.")
