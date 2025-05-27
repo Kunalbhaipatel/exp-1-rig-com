@@ -322,6 +322,25 @@ with tabs[4]:
                         ''', unsafe_allow_html=True)
 
                 st.markdown("### 🏆 Ratio-Based Scoring & Rankings")
+
+    if selected_metrics:
+        derrick_avg = derrick_group[selected_metrics].mean().reset_index()
+        derrick_avg.columns = ["Metric", "Derrick"]
+
+        non_derrick_avg = non_derrick_group[selected_metrics].mean().reset_index()
+        non_derrick_avg.columns = ["Metric", "Non-Derrick"]
+
+        merged_avg = pd.merge(derrick_avg, non_derrick_avg, on="Metric")
+        melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
+                             var_name="Shaker_Type", value_name="Average")
+
+        fig = px.bar(
+            melted_avg, x="Metric", y="Average", color="Shaker_Type", 
+            barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Please select at least one metric to compare.")
                 scoring_df = filtered.copy()
                 if "DSRE" in scoring_df.columns:
                     scoring_df["Efficiency Score"] = (
