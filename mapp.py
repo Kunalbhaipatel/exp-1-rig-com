@@ -57,14 +57,19 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 </style>
 """, unsafe_allow_html=True)
 
-# Upload Section
-with st.expander("📁 Upload your CSV file", expanded=True):
+# Upload Sectionimport os
+
+default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
+
+with st.expander("📁 Upload your CSV file (optional)", expanded=True):
     uploaded_file = st.file_uploader("", type="csv")
-    if uploaded_file:
-        data = pd.read_csv(uploaded_file, quotechar='"', skipinitialspace=True, engine="python")
-        st.success("CSV uploaded and loaded successfully!")
 
-
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.success("✅ Custom CSV uploaded successfully.")
+else:
+    df = pd.read_csv(default_path)
+    st.info("ℹ️ Using default sample dataset.")
 
     else:
         st.warning("Please upload a CSV file to get started.")
