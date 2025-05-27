@@ -66,7 +66,7 @@ with st.expander("📁 Upload your CSV file (optional)", expanded=True):
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
     st.success("✅ Custom CSV uploaded successfully.")
-    else:
+else:
     data = pd.read_csv(default_path)
     st.info("ℹ️ Using default sample dataset.")
 
@@ -128,7 +128,7 @@ with tabs[0]:
     if "Metric" in data.columns and "Value" in data.columns:
         metric_data = data[data["Metric"] == selected_metric]
     else:
-        metric_data = pd.melt(
+    metric_data = pd.melt(
             data,
             id_vars=["Well_Name"],
             value_vars=available_metrics,
@@ -155,7 +155,7 @@ with tabs[0]:
              title="Well Name vs Key Metrics", height=600)
         
     else:
-        st.warning("No valid numeric data found for chart.")
+    st.warning("No valid numeric data found for chart.")
 
 
 # ---------- TAB 2: SUMMARY + CHARTS ----------
@@ -325,8 +325,8 @@ with tabs[4]:
         rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
         st.dataframe(rank_df, use_container_width=True)
     else:
-        st.warning("DSRE column missing for scoring.")
+    st.warning("DSRE column missing for scoring.")
     except Exception as e:
     st.error(f"Comparison logic error: {e}")
     else:
-        st.warning("'flowline_Shakers' column not found in dataset.")
+    st.warning("'flowline_Shakers' column not found in dataset.")
