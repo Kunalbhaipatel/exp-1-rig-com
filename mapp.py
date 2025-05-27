@@ -66,7 +66,7 @@ with st.expander("📁 Upload your CSV file (optional)", expanded=True):
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
     st.success("✅ Custom CSV uploaded successfully.")
-else:
+    else:
     data = pd.read_csv(default_path)
     st.info("ℹ️ Using default sample dataset.")
 
@@ -202,8 +202,8 @@ with tabs[1]:
                     line=dict(color="gray")
                 )
             st.plotly_chart(fig3, use_container_width=True)
-        except Exception as e:
-            st.error(f"Chart rendering error: {e}")
+    except Exception as e:
+    st.error(f"Chart rendering error: {e}")
 
 
     st.markdown("### 📊 Additional Ratios Comparison")
@@ -214,8 +214,8 @@ with tabs[1]:
                    labels={"value": "Ratio", "variable": "Metric"},
                    title="Dilution vs SCE Loss Ratios")
             st.plotly_chart(fig4, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error rendering ratio comparison chart: {e}")
+    except Exception as e:
+    st.error(f"Error rendering ratio comparison chart: {e}")
     else:
         st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
@@ -254,8 +254,8 @@ with tabs[3]:
                 labels={"ROP": "Rate of Penetration", "Temp": "Temperature (°F)"}
             )
             st.plotly_chart(fig_rop_temp, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error rendering ROP vs Temp chart: {e}")
+    except Exception as e:
+    st.error(f"Error rendering ROP vs Temp chart: {e}")
 
     st.markdown("#### 📌 Base Oil vs Water Composition")
     if "Base_Oil" in filtered.columns and "Water" in filtered.columns:
@@ -266,8 +266,8 @@ with tabs[3]:
                 labels={"Base_Oil": "Base Oil (bbl)", "Water": "Water (bbl)"}
             )
             st.plotly_chart(fig_bo_water, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error rendering Base Oil vs Water chart: {e}")
+    except Exception as e:
+    st.error(f"Error rendering Base Oil vs Water chart: {e}")
 
     st.markdown("#### 📌 Correlation Heatmap")
     try:
@@ -277,7 +277,7 @@ with tabs[3]:
         fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
         st.plotly_chart(fig_corr, use_container_width=True)
     except Exception as e:
-        st.error(f"Correlation heatmap error: {e}")
+    st.error(f"Correlation heatmap error: {e}")
 
 
 # ---------- TAB 5: MULTI-WELL COMPARISON ----------
@@ -322,11 +322,11 @@ with tabs[4]:
         - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
         - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
                     )
-                    rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
-                    st.dataframe(rank_df, use_container_width=True)
-                else:
-            st.warning("DSRE column missing for scoring.")
-            except Exception as e:
-        st.error(f"Comparison logic error: {e}")
+        rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
+        st.dataframe(rank_df, use_container_width=True)
+    else:
+        st.warning("DSRE column missing for scoring.")
+    except Exception as e:
+    st.error(f"Comparison logic error: {e}")
     else:
         st.warning("'flowline_Shakers' column not found in dataset.")
