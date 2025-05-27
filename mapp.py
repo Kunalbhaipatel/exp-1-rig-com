@@ -287,42 +287,6 @@ with tabs[4]:
 
         selected_metrics = st.multiselect("Select Metrics to Compare", compare_cols, default=["DSRE", "ROP", "Total_Dil"])
 
-        if selected_metrics:
-            try:
-                available = ["Well_Name", "Shaker_Type"] + [col for col in selected_metrics if col in filtered.columns]
-                melted_df = filtered[available].melt(
-                    id_vars=["Well_Name", "Shaker_Type"], var_name="Metric", value_name="Value"
-                )
-                fig = px.bar(
-                    melted_df, x="Well_Name", y="Value", color="Shaker_Type", facet_col="Metric",
-                    title="Derrick vs Non-Derrick Comparison by Well and Metric", height=600,
-                    color_discrete_map={"Derrick": "#007635", "Non-Derrick": "lightgrey"}
-                )
-                
-
-                st.markdown("### 📋 Group Summary Statistics")
-                summary_metrics = [col for col in ["DSRE", "ROP", "Total_SCE", "Total_Dil", "Dilution_Ratio", "SCE_Loss_Ratio"] if col in filtered.columns]
-                if summary_metrics:
-                    kpi_df = filtered.groupby("Shaker_Type")[summary_metrics].mean().round(2).reset_index()
-
-                    for _, row in kpi_df.iterrows():
-                        color = "#007635" if row["Shaker_Type"] == "Derrick" else "#d3d3d3"
-                        st.markdown(f'''
-                            <div style="background-color:{color};padding:1rem;border-radius:10px;margin-bottom:1rem;">
-                                <h4 style="color:white;">{row['Shaker_Type']} Shakers</h4>
-                                <div style="display:flex;justify-content:space-between;color:white;">
-                                    <div>Avg DSRE: <b>{row.get("DSRE", 0) * 100:.1f}%</b></div>
-                                    <div>Avg ROP: <b>{row.get("ROP", "N/A")}</b></div>
-                                    <div>Total Dilution: <b>{row.get("Total_Dil", "N/A")}</b></div>
-                                    <div>SCE: <b>{row.get("Total_SCE", "N/A")}</b></div>
-                                    <div>Dilution Ratio: <b>{row.get("Dilution_Ratio", "N/A")}</b></div>
-                                    <div>SCE Loss Ratio: <b>{row.get("SCE_Loss_Ratio", "N/A")}</b></div>
-                                </div>
-                            </div>
-                        ''', unsafe_allow_html=True)
-
-                st.markdown("### 🏆 Ratio-Based Scoring & Rankings")
-
     if selected_metrics:
         derrick_avg = derrick_group[selected_metrics].mean().reset_index()
         derrick_avg.columns = ["Metric", "Derrick"]
@@ -339,6 +303,8 @@ with tabs[4]:
             barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
         )
         st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Please select at least one metric to compare.")
     else:
         st.info("Please select at least one metric to compare.")
                 scoring_df = filtered.copy()
