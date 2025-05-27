@@ -99,8 +99,6 @@ st.markdown("Use filters to explore well-level, shaker-type, and fluid performan
 # Placeholder: You can now paste the full app logic (filters, tabs, charts, metrics...)
 # and insert the previously generated tooltips inside each tab as needed.
 # Filters
-st.title("📊 Rig Comparison Dashboard")
-
 with st.container():
     col1, col2, col3, col4 = st.columns(4)
     with col1:
