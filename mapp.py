@@ -54,21 +54,10 @@ h1 {
   border: 1px solid #d0d6dd;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #004578;
-    color: white;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 0.9rem;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Header ----------
+# ---------- Full-width Jet Black Header ----------
 st.markdown("""
 <style>
 .full-header {
@@ -107,8 +96,7 @@ data = pd.read_csv(default_path)
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
 
-
-# ---------- FOOTER ----------
+# ---------- Jet Black Footer ----------
 st.markdown("""
 <div style='position: fixed; left: 0; bottom: 0; width: 100%; background-color: #1c1c1c; color: white; text-align: center; padding: 8px 0; font-size: 0.9rem; z-index: 999;'>
     &copy; 2025 Derrick Corp | Designed for drilling performance insights
