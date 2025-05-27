@@ -66,8 +66,6 @@ data = pd.read_csv(default_path)
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
 
-
-
 # Filters
 st.title("📊 Rig Comparison Dashboard")
 
