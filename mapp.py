@@ -341,4 +341,4 @@ with tabs[4]:
     else:
         st.warning("⚠️ 'flowline_Shakers' column not found in dataset.")
 with st.expander("📁 Upload your CSV file (optional)", expanded=False):
-    uploaded_file = st.file_uploader("", type="csv")
+    uploaded_file = st.file_uploader("Upload CSV", type="csv", key="unique_csv_uploader")
