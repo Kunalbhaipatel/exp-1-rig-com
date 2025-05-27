@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 import pydeck as pdk
+import os
 
 st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_icon="📊")
 
@@ -58,8 +59,6 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 """, unsafe_allow_html=True)
 
 # Upload Section
-with st.expander("📁 Upload your CSV file", expanded=True):
-import os
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
 with st.expander("📁 Upload your CSV file (optional)", expanded=True):
     uploaded_file = st.file_uploader("", type="csv")
