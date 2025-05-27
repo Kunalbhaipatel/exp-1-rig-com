@@ -186,22 +186,21 @@ with tabs[1]:
             fig3 = px.bar(subset, x="Well_Name", y="DSRE", height=400,
                   labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
             if "Discard Ratio" in subset.columns:
-    fig3.add_scatter(
-        x=subset["Well_Name"],
-        y=subset["Discard Ratio"],
-        mode="lines+markers",
-        name="SCE Loss Ratio",
-        line=dict(color="red")
-    )
-                         line=dict(color="red")
+                fig3.add_scatter(
+                    x=subset["Well_Name"],
+                    y=subset["Discard Ratio"],
+                    mode="lines+markers",
+                    name="SCE Loss Ratio",
+                    line=dict(color="red")
+                )
             if "Dilution_Ratio" in subset.columns:
-    fig3.add_scatter(
-        x=subset["Well_Name"],
-        y=subset["Dilution_Ratio"],
-        mode="lines+markers",
-        name="Dilution Ratio",
-        line=dict(color="gray")
-    )
+                fig3.add_scatter(
+                    x=subset["Well_Name"],
+                    y=subset["Dilution_Ratio"],
+                    mode="lines+markers",
+                    name="Dilution Ratio",
+                    line=dict(color="gray")
+                )
             st.plotly_chart(fig3, use_container_width=True)
         except Exception as e:
             st.error(f"Chart rendering error: {e}")
