@@ -310,9 +310,20 @@ with tabs[2]:
     else:
         st.info("DSRE column not found for efficiency insights.")
 
-
 # ---------- TAB 4: ADVANCED ANALYTICS ----------
 with tabs[3]:
+    with st.expander("ℹ️ What does this section show?", expanded=False):
+        st.markdown("""
+### 🤖 Advanced Analytics Summary
+
+This section helps the **drilling engineer** understand how mud composition, temperature, and drilling rate interact:
+
+- **ROP vs Temperature**: Shows how rate of penetration changes with formation temperature. Useful for adjusting WOB or RPM.
+- **Base Oil vs Water**: Indicates balance in mud systems. High water may reduce lubricity or solids suspension.
+- **Correlation Heatmap**: Reveals which parameters (e.g., DSRE, dilution, discard ratio) are statistically correlated. 
+  - ✅ Helps identify what to optimize (e.g., reduce dilution or increase screen performance).
+  - 🛠️ Converts data into **decisions** (e.g., adjust mud ratios, optimize bit hydraulics).
+""")
     st.markdown("### 🤖 Advanced Analytics & Trends")
 
     st.markdown("#### 📌 ROP vs Temperature")
@@ -347,28 +358,28 @@ with tabs[3]:
     try:
         corr_cols = ["DSRE", "Total_SCE", "Total_Dil", "Discard Ratio", "Dilution_Ratio", "ROP", "AMW", "Haul_OFF"]
         corr_data = filtered[corr_cols].dropna()
-        corr_matrix = corr_data.corr()
-        fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
+        fig_corr = px.imshow(corr_data.corr(), text_auto=True, aspect="auto", color_continuous_scale='Blues')
         st.plotly_chart(fig_corr, use_container_width=True)
     except Exception as e:
         st.error(f"Correlation heatmap error: {e}")
 
-with st.expander("ℹ️ What does this section show?", expanded=False):
-        st.markdown("""
-### 🤖 Advanced Analytics
 
-This section helps the **drilling engineer** understand how mud composition, temperature, and drilling rate interact:
-
-- **ROP vs Temperature**: Shows how rate of penetration changes with formation temperature. Useful for adjusting WOB or RPM.
-- **Base Oil vs Water**: Indicates balance in mud systems. High water may reduce lubricity or solids suspension.
-- **Correlation Heatmap**: Reveals which parameters (e.g., DSRE, dilution, discard ratio) are statistically correlated. 
-  - ✅ Helps identify what to optimize (e.g., reduce dilution or increase screen performance).
-  - 🛠️ Converts data into **decisions** (e.g., adjust mud ratios, optimize bit hydraulics).
-""")
-    st.markdown("### 🤖 Advanced Analytics")
-
-# ---------- TAB 5: Multi-well Comparison: DERRICK vs NON-DERRICK ----------
+# ---------- TAB 5: DERRICK vs NON-DERRICK ----------
 with tabs[4]:
+    with st.expander("ℹ️ What does this section show?", expanded=False):
+        st.markdown("""
+### 🧮 Derrick vs Non-Derrick Comparison
+
+This section compares **shaker performance** across rig setups:
+
+- **Bar Chart**: Average values of DSRE, dilution, and discard ratios across shaker types.
+- **Efficiency Score**: Combines DSRE, dilution, and losses into one benchmark. Higher = more efficient solids control.
+- **Practical Insight**:
+  - ✅ Identify high-efficiency wells
+  - 🔄 Decide if shaker replacement or screen upgrades are justified
+  - 📉 Spot trends to reduce discard or dilution losses
+  - 🧠 Converts data into **actions** (e.g., optimize shaker screen mesh, rebalance flowline, reduce SCE losses)
+""")
     st.markdown("### 🧮 Derrick vs Non-Derrick Comparison")
     st.markdown("Compare key performance metrics by shaker type. Derrick = 🟩, Non-Derrick = 🟥")
 
@@ -379,7 +390,6 @@ with tabs[4]:
     ]
 
     if "flowline_Shakers" in filtered.columns:
-        # Classify Derrick vs Non-Derrick
         filtered["Shaker_Type"] = filtered["flowline_Shakers"].apply(
             lambda x: "Derrick" if isinstance(x, str) and "derrick" in x.lower() else "Non-Derrick"
         )
@@ -397,12 +407,9 @@ with tabs[4]:
             non_derrick_avg.columns = ["Metric", "Non-Derrick"]
 
             merged_avg = pd.merge(derrick_avg, non_derrick_avg, on="Metric")
-            melted_avg = pd.melt(
-                merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
-                var_name="Shaker_Type", value_name="Average"
-            )
+            melted_avg = pd.melt(merged_avg, id_vars="Metric", value_vars=["Derrick", "Non-Derrick"], 
+                                 var_name="Shaker_Type", value_name="Average")
 
-            # Bar chart with color mapping
             fig = px.bar(
                 melted_avg, x="Metric", y="Average", color="Shaker_Type",
                 color_discrete_map={"Derrick": "#007535", "Non-Derrick": "gray"},
@@ -410,7 +417,6 @@ with tabs[4]:
             )
             st.plotly_chart(fig, use_container_width=True)
 
-            # Ranking Table with Emoji
             scoring_df = filtered.copy()
             if "DSRE" in scoring_df.columns:
                 scoring_df["Efficiency Score"] = (
@@ -418,15 +424,12 @@ with tabs[4]:
                     - scoring_df.get("Dilution_Ratio", 0).fillna(0) * 10
                     - scoring_df.get("Discard Ratio", 0).fillna(0) * 10
                 )
-
                 scoring_df["Flag"] = scoring_df["Shaker_Type"].map({
                     "Derrick": "🟩 Derrick",
                     "Non-Derrick": "🟥 Non-Derrick"
                 })
-
                 rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score", "Flag"]]\
                     .sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
-
                 st.markdown("### 🏅 Ranked Wells by Efficiency Score")
                 st.dataframe(rank_df.drop(columns=["Shaker_Type"]), use_container_width=True)
             else:
