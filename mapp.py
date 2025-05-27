@@ -1,3 +1,4 @@
+
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -10,7 +11,14 @@ st.set_page_config(layout="wide", page_title="Rig Comparison Dashboard", page_ic
 st.markdown("""
 <style>
 body { background-color: #f5f7fa; }
-h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
+header, .reportview-container .main .block-container {
+    padding-top: 0rem;
+}
+h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #004578;
+}
 [data-testid="stMetric"] {
   background-color: #ffffff;
   border: 1px solid #d0d6dd;
@@ -31,12 +39,6 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 .stButton button:hover {
   background-color: #005ea2;
 }
-.css-1cpxqw2, .css-1y4p8pa {
-  background-color: #ffffff !important;
-  border: 1px solid #d0d6dd !important;
-  border-radius: 10px !important;
-  padding: 0.3rem !important;
-}
 .stTabs [data-baseweb="tab"] {
   font-size: 1rem;
   padding: 10px;
@@ -55,16 +57,51 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
   border: 1px solid #d0d6dd;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
+footer {
+  visibility: hidden;
+}
+# Custom Footer
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #004578;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 0.9rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# Load permanent sample dataset
+# Graphical Header
+st.markdown("""
+<div style='display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; background-color: #0078d4; color: white; border-radius: 10px; margin-bottom: 1rem;'>
+    <div style='display: flex; align-items: center;'>
+        <img src='https://img.icons8.com/color/48/dashboard-layout.png' style='margin-right: 12px;'/>
+        <h2 style='margin: 0;'>Rig Comparison Dashboard</h2>
+    </div>
+    <div style='font-size: 0.9rem;'>Powered by ProdigyIQ</div>
+</div>
+""", unsafe_allow_html=True)
+
+# Load dataset
 default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
 data = pd.read_csv(default_path)
 
-# Clean up any empty score columns
+# Drop if empty
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
+
+# Footer
+st.markdown("""
+<div class='footer'>
+    &copy; 2025 Derrick Corp | Designed for drilling performance insights
+</div>
+""", unsafe_allow_html=True)
+
+# You can continue with filters, tabs, charts, and insights here...
 # Filters
 st.title("📊 Rig Comparison Dashboard")
 
