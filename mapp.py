@@ -131,39 +131,7 @@ with tabs[0]:
         )
         metric_data = metric_data[metric_data["Metric"] == selected_metric]
 
-    st.markdown("#### 📊 Chart Display Controls")
-    show_avg_line = st.checkbox("Show Average Line", value=True)
-    show_trend_line = st.checkbox("Show Trend Line", value=False)
-
-    fig = px.bar(
-        melted_avg, x="Metric", y="Average", color="Shaker_Type",
-        color_discrete_map={
-            "Derrick": derrick_color,
-            "Non-Derrick": non_derrick_color
-        },
-        barmode="group", title="Derrick vs Non-Derrick - Average Metrics"
-    )
-
-    if show_avg_line:
-        for metric in melted_avg["Metric"].unique():
-            metric_df = melted_avg[melted_avg["Metric"] == metric]
-            avg_val = metric_df["Average"].mean()
-            fig.add_hline(y=avg_val, line_dash="dot", line_color="black",
-                          annotation_text=f"Avg {metric}", annotation_position="top left")
-
-    if show_trend_line:
-        try:
-            import numpy as np
-            for group in melted_avg["Shaker_Type"].unique():
-                sub = melted_avg[melted_avg["Shaker_Type"] == group]
-                if len(sub) > 1:
-                    x = list(range(len(sub)))
-                    y = sub["Average"]
-                    z = np.polyfit(x, y, 1)
-                    p = np.poly1d(z)
-                    fig.add_scatter(x=sub["Metric"], y=p(x), mode="lines", name=f"{group} Trend")
-        except Exception as e:
-            st.warning("Trendline calculation failed.")
+    fig = px.bar(metric_data, x="Well_Name", y="Value", title=f"Well Name vs {selected_metric}")
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("### 🧾 Well-Level Overview")
