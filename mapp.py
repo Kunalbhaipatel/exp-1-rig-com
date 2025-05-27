@@ -58,18 +58,6 @@ h1 { font-size: 2.4rem; font-weight: 700; color: #004578; }
 </style>
 """, unsafe_allow_html=True)
 
-# Upload Section
-default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
-with st.expander("📁 Upload your CSV file (optional)", expanded=True):
-    uploaded_file = st.file_uploader("", type="csv")
-
-if uploaded_file is not None:
-    data = pd.read_csv(uploaded_file)
-    st.success("✅ Custom CSV uploaded successfully.")
-else:
-    data = pd.read_csv(default_path)
-    st.info("ℹ️ Using default sample dataset.")
-
 # Drop Efficiency Score column if it exists but has no values
 if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
     data.drop(columns=["Efficiency Score"], inplace=True)
@@ -340,5 +328,3 @@ with tabs[4]:
             st.info("ℹ️ Please select at least one metric to compare.")
     else:
         st.warning("⚠️ 'flowline_Shakers' column not found in dataset.")
-with st.expander("📁 Upload your CSV file (optional)", expanded=False):
-    uploaded_file = st.file_uploader("Upload CSV", type="csv", key="unique_csv_uploader")
