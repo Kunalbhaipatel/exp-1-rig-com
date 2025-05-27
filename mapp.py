@@ -103,7 +103,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
 # ---------- App Content Begins ----------
 st.markdown("Use filters to explore well-level, shaker-type, and fluid performance metrics.")
 
