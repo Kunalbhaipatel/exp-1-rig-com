@@ -67,6 +67,9 @@ with st.expander("📁 Upload your CSV file (optional)", expanded=True):
     data = pd.read_csv(uploaded_file)
 else:
     data = pd.read_csv(default_path)
+# Load default dataset only
+default_path = os.path.join(os.path.dirname(__file__), "sample_rig_dashboard_data.csv")
+data = pd.read_csv(default_path)
 
 
 
