@@ -305,8 +305,6 @@ with tabs[4]:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Please select at least one metric to compare.")
-    else:
-        st.info("Please select at least one metric to compare.")
                 scoring_df = filtered.copy()
                 if "DSRE" in scoring_df.columns:
                     scoring_df["Efficiency Score"] = (
@@ -320,7 +318,5 @@ with tabs[4]:
                     st.warning("DSRE column missing for scoring.")
             except Exception as e:
                 st.error(f"Comparison logic error: {e}")
-        else:
-            st.info("Select at least one metric to view comparison.")
     else:
         st.warning("'flowline_Shakers' column not found in dataset.")
