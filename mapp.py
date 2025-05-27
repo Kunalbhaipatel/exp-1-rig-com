@@ -142,7 +142,7 @@ with tabs[0]:
     st.markdown("### 🧾 Well-Level Overview")
 
     numeric_cols = [
-        "DSRE", "SCE_Loss_Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
+        "DSRE", "Discard Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
         "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material",
         "Chemicals", "Dilution_Ratio", "Solids_Generated"
     ]
@@ -185,8 +185,8 @@ with tabs[1]:
         try:
             fig3 = px.bar(subset, x="Well_Name", y="DSRE", height=400,
                   labels={"DSRE": "DSRE"}, color_discrete_sequence=["#66c2a5"])
-            if "SCE_Loss_Ratio" in subset.columns:
-        fig3.add_scatter(x=subset["Well_Name"], y=subset["SCE_Loss_Ratio"], mode='lines+markers', name="SCE Loss Ratio",
+            if "Discard Ratio" in subset.columns:
+            fig3.add_scatter(x=subset["Well_Name"], y=subset["Discard Ratio"], mode='lines+markers', name="SCE Loss Ratio",
                          line=dict(color="red"))
             if "Dilution_Ratio" in subset.columns:
         fig3.add_scatter(x=subset["Well_Name"], y=subset["Dilution_Ratio"], mode='lines+markers', name="Dilution Ratio",
@@ -197,7 +197,7 @@ with tabs[1]:
 
 
     st.markdown("### 📊 Additional Ratios Comparison")
-    ratio_cols = [col for col in ["Dilution_Ratio", "SCE_Loss_Ratio"] if col in subset.columns]
+    ratio_cols = [col for col in ["Dilution_Ratio", "Discard Ratio"] if col in subset.columns]
     if ratio_cols:
         try:
             fig4 = px.line(subset, x="Well_Name", y=ratio_cols, markers=True,
@@ -207,7 +207,7 @@ with tabs[1]:
         except Exception as e:
             st.error(f"Error rendering ratio comparison chart: {e}")
     else:
-        st.info("Dilution_Ratio and SCE_Loss_Ratio columns not found for ratio comparison.")
+        st.info("Dilution_Ratio and Discard Ratio columns not found for ratio comparison.")
 
 
 # ---------- TAB 3: STATISTICS & INSIGHTS ----------
@@ -261,7 +261,7 @@ with tabs[3]:
 
     st.markdown("#### 📌 Correlation Heatmap")
     try:
-        corr_cols = ["DSRE", "Total_SCE", "Total_Dil", "SCE_Loss_Ratio", "Dilution_Ratio", "ROP", "AMW", "Haul_OFF"]
+        corr_cols = ["DSRE", "Total_SCE", "Total_Dil", "Discard Ratio", "Dilution_Ratio", "ROP", "AMW", "Haul_OFF"]
         corr_data = filtered[corr_cols].dropna()
         corr_matrix = corr_data.corr()
         fig_corr = px.imshow(corr_matrix, text_auto=True, aspect="auto", color_continuous_scale='Blues')
@@ -275,7 +275,7 @@ with tabs[4]:
     st.markdown("### 🧮 Derrick vs Non-Derrick Comparison")
 
     compare_cols = [
-        "DSRE", "SCE_Loss_Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
+        "DSRE", "Discard Ratio", "Total_SCE", "Total_Dil", "ROP", "Temp", "DOW", "AMW",
         "Drilling_Hours", "Haul_OFF", "Base_Oil", "Water", "Weight_Material",
         "Chemicals", "Dilution_Ratio", "Solids_Generated"
     ]
@@ -310,7 +310,7 @@ with tabs[4]:
                     scoring_df["Efficiency Score"] = (
                         scoring_df["DSRE"].fillna(0) * 100
                         - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
-                        - pd.Series(scoring_df.get("SCE_Loss_Ratio", 0)).fillna(0) * 10
+                        - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
                     )
                     rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
                     st.dataframe(rank_df, use_container_width=True)
