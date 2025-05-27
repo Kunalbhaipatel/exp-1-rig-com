@@ -315,12 +315,12 @@ with tabs[4]:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Please select at least one metric to compare.")
-                scoring_df = filtered.copy()
-                if "DSRE" in scoring_df.columns:
-                    scoring_df["Efficiency Score"] = (
-                        scoring_df["DSRE"].fillna(0) * 100
-                        - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
-                        - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
+    scoring_df = filtered.copy()
+    if "DSRE" in scoring_df.columns:
+        scoring_df["Efficiency Score"] = (
+        scoring_df["DSRE"].fillna(0) * 100
+        - pd.Series(scoring_df.get("Dilution_Ratio", 0)).fillna(0) * 10
+        - pd.Series(scoring_df.get("Discard Ratio", 0)).fillna(0) * 10
                     )
                     rank_df = scoring_df[["Well_Name", "Shaker_Type", "Efficiency Score"]].sort_values(by="Efficiency Score", ascending=False).reset_index(drop=True)
                     st.dataframe(rank_df, use_container_width=True)
