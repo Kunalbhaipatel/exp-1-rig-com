@@ -71,6 +71,11 @@ else:
     data = pd.read_csv(default_path)
     st.info("ℹ️ Using default sample dataset.")
 
+# Drop Efficiency Score column if it exists but has no values
+if "Efficiency Score" in data.columns and data["Efficiency Score"].isnull().all():
+    data.drop(columns=["Efficiency Score"], inplace=True)
+
+
 # Filters
 st.title("📊 Rig Comparison Dashboard")
 
