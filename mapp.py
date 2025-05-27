@@ -355,7 +355,7 @@ with tabs[3]:
 
 with st.expander("ℹ️ What does this section show?", expanded=False):
         st.markdown("""
-### 🤖 Advanced Analytics Summary
+### 🤖 Advanced Analytics
 
 This section helps the **drilling engineer** understand how mud composition, temperature, and drilling rate interact:
 
@@ -365,7 +365,7 @@ This section helps the **drilling engineer** understand how mud composition, tem
   - ✅ Helps identify what to optimize (e.g., reduce dilution or increase screen performance).
   - 🛠️ Converts data into **decisions** (e.g., adjust mud ratios, optimize bit hydraulics).
 """)
-    st.markdown("### 🤖 Advanced Analytics & Trends")
+    st.markdown("### 🤖 Advanced Analytics")
 
 # ---------- TAB 5: Multi-well Comparison: DERRICK vs NON-DERRICK ----------
 with tabs[4]:
