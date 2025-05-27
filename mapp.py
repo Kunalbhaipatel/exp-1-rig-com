@@ -193,7 +193,7 @@ with tabs[1]:
         name="SCE Loss Ratio",
         line=dict(color="red")
     )
-                         line=dict(color="red"))
+                         line=dict(color="red")
             if "Dilution_Ratio" in subset.columns:
     fig3.add_scatter(
         x=subset["Well_Name"],
